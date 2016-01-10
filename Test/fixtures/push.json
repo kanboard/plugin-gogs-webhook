@@ -1,0 +1,55 @@
+{
+    "secret": "",
+    "ref": "refs/heads/master",
+    "before": "fdaddc550f7a7e3fc2632963e5e4b80274cbd87c",
+    "after": "6ed26f1acb801e8904f12b842b918dfd9d10417b",
+    "compare_url": "http://192.168.99.100:3000/me/test/compare/fdaddc550f7a7e3fc2632963e5e4b80274cbd87c...6ed26f1acb801e8904f12b842b918dfd9d10417b",
+    "commits": [
+        {
+            "id": "6ed26f1acb801e8904f12b842b918dfd9d10417b",
+            "message": "Test\n",
+            "url": "http://192.168.99.100:3000/me/test/commit/6ed26f1acb801e8904f12b842b918dfd9d10499",
+            "author": {
+                "name": "Frederic Guillot",
+                "email": "fred@localhost",
+                "username": ""
+            }
+        },
+        {
+            "id": "6ed26f1acb801e8904f12b842b918dfd9d10417b",
+            "message": "Fix issue #2\n",
+            "url": "http://192.168.99.100:3000/me/test/commit/6ed26f1acb801e8904f12b842b918dfd9d10417b",
+            "author": {
+                "name": "Frederic Guillot",
+                "email": "fred@localhost",
+                "username": ""
+            }
+        }
+    ],
+    "repository": {
+        "id": 1,
+        "name": "test",
+        "url": "http://192.168.99.100:3000/me/test",
+        "ssh_url": "git@localhost:me/test.git",
+        "clone_url": "http://192.168.99.100:3000/me/test.git",
+        "description": "",
+        "website": "",
+        "watchers": 1,
+        "owner": {
+            "name": "me",
+            "email": "",
+            "username": "me"
+        },
+        "private": false
+    },
+    "pusher": {
+        "name": "me",
+        "email": "",
+        "username": "me"
+    },
+    "sender": {
+        "login": "me",
+        "id": 1,
+        "avatar_url": "http://192.168.99.100:3000//avatars/1"
+    }
+}
