@@ -1,7 +1,9 @@
 Gogs Webhook
-=================
+============
 
-Bind Gogs webhook events to Kanboard automatic actions.
+[![Build Status](https://travis-ci.org/kanboard/plugin-gogs-webhook.svg?branch=master)](https://travis-ci.org/kanboard/plugin-gogs-webhook)
+
+Connect Gogs webhook events to Kanboard automatic actions.
 
 Author
 ------
