@@ -9,17 +9,18 @@ class Plugin extends Base
 {
     public function initialize()
     {
-        $this->on('app.bootstrap', function($container) {
-            Translator::load($container['config']->getCurrentLanguage(), __DIR__.'/Locale');
-            $container['eventManager']->register(WebhookHandler::EVENT_COMMIT, t('Gogs commit received'));
-        });
-
         $this->actionManager->getAction('\Kanboard\Action\CommentCreation')->addEvent(WebhookHandler::EVENT_COMMIT);
         $this->actionManager->getAction('\Kanboard\Action\TaskClose')->addEvent(WebhookHandler::EVENT_COMMIT);
 
         $this->template->hook->attach('template:project:integrations', 'GogsWebhook:project/integrations');
 
         $this->route->addRoute('/webhook/gogs/:project_id/:token', 'webhook', 'handler', 'GogsWebhook');
+    }
+
+    public function onStartup()
+    {
+        Translator::load($this->language->getCurrentLanguage(), __DIR__.'/Locale');
+        $this->eventManager->register(WebhookHandler::EVENT_COMMIT, t('Gogs commit received'));
     }
 
     public function getPluginName()
@@ -39,7 +40,7 @@ class Plugin extends Base
 
     public function getPluginVersion()
     {
-        return '1.0.1';
+        return '1.0.2';
     }
 
     public function getPluginHomepage()
