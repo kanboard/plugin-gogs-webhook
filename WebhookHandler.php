@@ -84,13 +84,13 @@ class WebhookHandler extends Base
      */
     public function handleCommit(array $commit)
     {
-        $task_id = $this->task->getTaskIdFromText($commit['message']);
+        $task_id = $this->taskModel->getTaskIdFromText($commit['message']);
 
         if (empty($task_id)) {
             return false;
         }
 
-        $task = $this->taskFinder->getById($task_id);
+        $task = $this->taskFinderModel->getById($task_id);
 
         if (empty($task)) {
             return false;

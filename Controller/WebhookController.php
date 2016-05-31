@@ -2,7 +2,7 @@
 
 namespace Kanboard\Plugin\GogsWebhook\Controller;
 
-use Kanboard\Controller\Base;
+use Kanboard\Controller\BaseController;
 use Kanboard\Plugin\GogsWebhook\WebhookHandler;
 
 /**
@@ -11,7 +11,7 @@ use Kanboard\Plugin\GogsWebhook\WebhookHandler;
  * @package  controller
  * @author   Frederic Guillot
  */
-class Webhook extends Base
+class WebhookController extends BaseController
 {
     /**
      * Handle Gogs webhooks
@@ -30,6 +30,6 @@ class Webhook extends Base
             $this->request->getJson()
         );
 
-        echo $result ? 'PARSED' : 'IGNORED';
+        $this->response->text($result ? 'PARSED' : 'IGNORED');
     }
 }

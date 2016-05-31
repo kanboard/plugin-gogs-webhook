@@ -2,13 +2,10 @@
 
 require_once 'tests/units/Base.php';
 
+use Kanboard\Event\GenericEvent;
 use Kanboard\Plugin\GogsWebhook\WebhookHandler;
-use Kanboard\Model\TaskCreation;
-use Kanboard\Model\TaskFinder;
-use Kanboard\Model\Project;
-use Kanboard\Model\ProjectUserRole;
-use Kanboard\Model\User;
-use Kanboard\Core\Security\Role;
+use Kanboard\Model\TaskCreationModel;
+use Kanboard\Model\ProjectModel;
 
 class WebhookHandlerTest extends Base
 {
@@ -23,8 +20,8 @@ class WebhookHandlerTest extends Base
     {
         $this->container['dispatcher']->addListener(WebhookHandler::EVENT_COMMIT, array($this, 'onCommit'));
 
-        $tc = new TaskCreation($this->container);
-        $p = new Project($this->container);
+        $tc = new TaskCreationModel($this->container);
+        $p = new ProjectModel($this->container);
         $handler = new WebhookHandler($this->container);
         $payload = json_decode(file_get_contents(__DIR__.'/fixtures/push.json'), true);
 
@@ -46,7 +43,7 @@ class WebhookHandlerTest extends Base
         $this->assertArrayHasKey(WebhookHandler::EVENT_COMMIT.'.WebhookHandlerTest::onCommit', $called);
     }
 
-    public function onCommit($event)
+    public function onCommit(GenericEvent $event)
     {
         $data = $event->getAll();
         $this->assertEquals(1, $data['project_id']);

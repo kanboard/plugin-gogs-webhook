@@ -14,12 +14,12 @@ class Plugin extends Base
 
         $this->template->hook->attach('template:project:integrations', 'GogsWebhook:project/integrations');
 
-        $this->route->addRoute('/webhook/gogs/:project_id/:token', 'webhook', 'handler', 'GogsWebhook');
+        $this->route->addRoute('/webhook/gogs/:project_id/:token', 'WebhookController', 'handler', 'GogsWebhook');
     }
 
     public function onStartup()
     {
-        Translator::load($this->language->getCurrentLanguage(), __DIR__.'/Locale');
+        Translator::load($this->languageModel->getCurrentLanguage(), __DIR__.'/Locale');
         $this->eventManager->register(WebhookHandler::EVENT_COMMIT, t('Gogs commit received'));
     }
 
@@ -40,7 +40,7 @@ class Plugin extends Base
 
     public function getPluginVersion()
     {
-        return '1.0.2';
+        return '1.0.3';
     }
 
     public function getPluginHomepage()
