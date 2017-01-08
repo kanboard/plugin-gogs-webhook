@@ -40,11 +40,16 @@ class Plugin extends Base
 
     public function getPluginVersion()
     {
-        return '1.0.3';
+        return '1.0.4';
     }
 
     public function getPluginHomepage()
     {
         return 'https://github.com/kanboard/plugin-gogs-webhook';
+    }
+
+    public function getCompatibleVersion()
+    {
+        return '>=1.0.37';
     }
 }
