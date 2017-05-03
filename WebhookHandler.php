@@ -92,11 +92,14 @@ class WebhookHandler extends Base
 
         if (isset($payload['action'])) {
             switch ($payload['action']) {
-            case 'opened':
-                if (isset($payload['issue'])) {
-                    $results[] = $this->handleOpenIssue($payload['repository'], $payload['issue']);
-                }
-                break;
+                case 'opened':
+                    if (isset($payload['issue'])) {
+                        $results[] = $this->handleOpenIssue($payload['repository'], $payload['issue']);
+                    }
+                    break;
+                case 'label_updated':
+                    $results[] = $this->handleLabelUpdated($payload['issue']);
+                    break;
             }
         }
 
@@ -105,6 +108,9 @@ class WebhookHandler extends Base
 
     /**
      * Retrieves a list of labels
+     *
+     * @param   array   $labels
+     * @return  array
      */
     private function getLabels(array $labels)
     {
@@ -121,6 +127,10 @@ class WebhookHandler extends Base
 
     /**
      * Handles an issue being opened on Gogs
+     *
+     * @param   array   $repository
+     * @param   array   $issue
+     * @return  bool
      */
     public function handleOpenIssue(array $repository, array $issue)
     {
