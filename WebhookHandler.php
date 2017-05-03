@@ -94,11 +94,8 @@ class WebhookHandler extends Base
             switch ($payload['action']) {
                 case 'opened':
                     if (isset($payload['issue'])) {
-                        $results[] = $this->handleOpenIssue($payload['repository'], $payload['issue']);
+                        $results[] = $this->handleOpenIssue($payload);
                     }
-                    break;
-                case 'label_updated':
-                    $results[] = $this->handleLabelUpdated($payload['issue']);
                     break;
             }
         }
@@ -128,28 +125,27 @@ class WebhookHandler extends Base
     /**
      * Handles an issue being opened on Gogs
      *
-     * @param   array   $repository
-     * @param   array   $issue
+     * @param   array   $payload
      * @return  bool
      */
-    public function handleOpenIssue(array $repository, array $issue)
+    public function handleOpenIssue(array $payload)
     {
         $this->dispatcher->dispatch(
             self::EVENT_ISSUES_OPEN,
             new GenericEvent([
                 'project_id'    =>  $this->project_id,
-                'title'         =>  $issue['title'],
-                'description'   =>  $issue['body'],
-                'tags'          =>  self::getLabels($issue['labels']),
+                'title'         =>  $payload['issue']['title'],
+                'description'   =>  $payload['issue']['body'],
+                'tags'          =>  self::getLabels($payload['issue']['labels']),
                 'links'         =>  [
                     [
                         'title' =>  t('Issue on Gogs'),
-                        'url'   =>  $repository['html_url'] . '/issues/' . $issue['number']
+                        'url'   =>  $payload['repository']['html_url'] . '/issues/' . $payload['issue']['number']
                     ]
                 ],
-                'reference'     =>  $repository['full_name'] . '#' . $issue['number'],
-                'owner_id'      =>  (isset($issue['assignee']['username'])) ? $this->userModel->getIdByUsername($issue['assignee']['username']) : null,
-                'date_due'      =>  (isset($issue['milestone']['due_on'])) ? $issue['milestone']['due_on'] : null
+                'reference'     =>  $payload['repository']['full_name'] . '#' . $payload['issue']['number'],
+                'owner_id'      =>  (isset($payload['issue']['assignee']['username'])) ? $this->userModel->getIdByUsername($payload['issue']['assignee']['username']) : null,
+                'date_due'      =>  (isset($payload['issue']['milestone']['due_on'])) ? $payload['issue']['milestone']['due_on'] : null
             ])
         );
 
