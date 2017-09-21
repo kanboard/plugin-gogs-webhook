@@ -18,6 +18,7 @@ class WebhookHandler extends Base
      * @var string
      */
     const EVENT_COMMIT = 'gogs.webhook.commit';
+    const EVENT_ISSUES_OPEN = 'gogs.webbook.issues.open';
 
     /**
      * Project id
@@ -48,11 +49,14 @@ class WebhookHandler extends Base
      */
     public function parsePayload($type, array $payload)
     {
-        if ($type === 'push') {
-            return $this->handlePush($payload);
+        switch ($type) {
+            case 'push':
+                return $this->handlePush($payload);
+            case 'issues':
+                return $this->handleIssues($payload);
+            default:
+                return false;
         }
-
-        return false;
     }
 
     /**
@@ -73,6 +77,79 @@ class WebhookHandler extends Base
         }
 
         return in_array(true, $results, true);
+    }
+
+    /**
+     * Parse issues events
+     *
+     * @access  public
+     * @param   array   $payload
+     * @return  boolean
+     */
+    public function handleIssues(array $payload)
+    {
+        $results = [];
+
+        if (isset($payload['action'])) {
+            switch ($payload['action']) {
+                case 'opened':
+                    if (isset($payload['issue'])) {
+                        $results[] = $this->handleOpenIssue($payload);
+                    }
+                    break;
+            }
+        }
+
+        return in_array(true, $results, true);
+    }
+
+    /**
+     * Retrieves a list of labels
+     *
+     * @param   array   $labels
+     * @return  array
+     */
+    private function getLabels(array $labels)
+    {
+        return array_values(array_filter(array_map(
+            function ($label) {
+                if (isset($label['name'])) {
+                    return $label['name'];
+                }
+                return null;
+            },
+            $labels
+        )));
+    }
+
+    /**
+     * Handles an issue being opened on Gogs
+     *
+     * @param   array   $payload
+     * @return  bool
+     */
+    public function handleOpenIssue(array $payload)
+    {
+        $this->dispatcher->dispatch(
+            self::EVENT_ISSUES_OPEN,
+            new GenericEvent([
+                'project_id'    =>  $this->project_id,
+                'title'         =>  $payload['issue']['title'],
+                'description'   =>  $payload['issue']['body'],
+                'tags'          =>  self::getLabels($payload['issue']['labels']),
+                'links'         =>  [
+                    [
+                        'title' =>  t('Issue on Gogs'),
+                        'url'   =>  $payload['repository']['html_url'] . '/issues/' . $payload['issue']['number']
+                    ]
+                ],
+                'reference'     =>  $payload['repository']['full_name'] . '#' . $payload['issue']['number'],
+                'owner_id'      =>  (isset($payload['issue']['assignee']['username'])) ? $this->userModel->getIdByUsername($payload['issue']['assignee']['username']) : null,
+                'date_due'      =>  (isset($payload['issue']['milestone']['due_on'])) ? $payload['issue']['milestone']['due_on'] : null
+            ])
+        );
+
+        return true;
     }
 
     /**
